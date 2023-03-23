@@ -1,11 +1,5 @@
 package club
 
-import "context"
-
-type ClubMemberDBIF interface {
-	Create(ctx context.Context, clubMember *ClubMember) (res *ClubMember, err error)
-}
-
 type ClubMember struct {
 	clubID    string
 	studentID string
