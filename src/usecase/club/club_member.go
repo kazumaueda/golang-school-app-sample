@@ -31,7 +31,7 @@ func (c *ClubMemberUseCase) Create(ctx context.Context, studentID string, clubID
 		return nil, err
 	}
 
-	cm := domainClub.NewClubMember(club.ID, student.ID)
+	cm := domainClub.NewClubMember(club.ID(), student.ID())
 	clubMember, err := c.clubMemberRepo.Create(ctx, cm)
 	if err != nil {
 		return nil, err

@@ -7,13 +7,21 @@ type ClubMemberDBIF interface {
 }
 
 type ClubMember struct {
-	ClubID    string
-	StudentID string
+	clubID    string
+	studentID string
+}
+
+func (c *ClubMember) ClubID() string {
+	return c.clubID
+}
+
+func (c *ClubMember) StudentID() string {
+	return c.studentID
 }
 
 func NewClubMember(clubID, studentID string) *ClubMember {
 	return &ClubMember{
-		ClubID:    clubID,
-		StudentID: studentID,
+		clubID:    clubID,
+		studentID: studentID,
 	}
 }

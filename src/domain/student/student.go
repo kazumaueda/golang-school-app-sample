@@ -8,5 +8,9 @@ type StudnetDBIF interface {
 }
 
 type Student struct {
-	ID string
+	id string
+}
+
+func (s *Student) ID() string {
+	return s.id
 }
