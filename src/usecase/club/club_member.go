@@ -7,17 +7,15 @@ import (
 )
 
 type ClubMemberUseCase struct {
-	studentRepo    domainStudent.StudnetDBIF
-	clubMemberRepo domainClub.ClubMemberDBIF
-	clubRepo       domainClub.ClubDBIF
+	studentRepo domainStudent.StudnetRepository
+	clubRepo    domainClub.ClubRepository
 }
 
 func NewClubUseCase(
-	studentRepo domainStudent.StudnetDBIF,
-	clubMemberRepo domainClub.ClubMemberDBIF,
-	clubRepo domainClub.ClubDBIF,
+	studentRepo domainStudent.StudnetRepository,
+	clubRepo domainClub.ClubRepository,
 ) *ClubMemberUseCase {
-	return &ClubMemberUseCase{studentRepo, clubMemberRepo, clubRepo}
+	return &ClubMemberUseCase{studentRepo, clubRepo}
 }
 
 func (c *ClubMemberUseCase) Create(ctx context.Context, studentID string, clubID string) (res *domainClub.ClubMember, err error) {
@@ -31,18 +29,24 @@ func (c *ClubMemberUseCase) Create(ctx context.Context, studentID string, clubID
 		return nil, err
 	}
 
-	cm := domainClub.NewClubMember(club.ID(), student.ID())
-	clubMember, err := c.clubMemberRepo.Create(ctx, cm)
+	err = club.AddClubMember(club.ID(), student.ID())
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: 承認状態の更新漏れを防ぐためビジネスロジックの内部に隠蔽したい
-	club.UpdateApprovalStatus()
-	_, err = c.clubRepo.Update(ctx, club)
+	newClub, err := c.clubRepo.Update(ctx, club)
 	if err != nil {
 		return nil, err
 	}
 
-	return clubMember, nil
+	// MEMO: 部員をresで返すための実装が冗長
+	newClubMembers := newClub.ClubMembers()
+	var newClubMember *domainClub.ClubMember
+	for _, cm := range newClubMembers {
+		if cm.ClubID() == club.ID() && cm.StudentID() == student.ID() {
+			newClubMember = &cm
+		}
+	}
+
+	return newClubMember, nil
 }

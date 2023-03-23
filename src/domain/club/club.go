@@ -23,7 +23,19 @@ func (c *Club) ClubMembers() []ClubMember {
 	return c.clubMembers
 }
 
-func (c *Club) UpdateApprovalStatus() {
+func (c *Club) AddClubMember(clubID, studentID string) error {
+	clubMember, err := newClubMember(clubID, studentID)
+	if err != nil {
+		return err
+	}
+
+	c.clubMembers = append(c.clubMembers, *clubMember)
+	c.updateApprovalStatus()
+
+	return nil
+}
+
+func (c *Club) updateApprovalStatus() {
 	if len(c.clubMembers) >= 5 {
 		c.approvalStatus = "approved"
 	} else {
