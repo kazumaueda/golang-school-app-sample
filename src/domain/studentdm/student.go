@@ -1,4 +1,4 @@
-package student
+package studentdm
 
 type Student struct {
 	id string

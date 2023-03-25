@@ -1,4 +1,4 @@
-package club
+package clubdm
 
 type Club struct {
 	id             string
@@ -23,8 +23,8 @@ func (c *Club) ClubMembers() []ClubMember {
 	return c.clubMembers
 }
 
-func (c *Club) AddClubMember(clubID, studentID string) error {
-	clubMember, err := newClubMember(clubID, studentID)
+func (c *Club) AddClubMember(studentID string) error {
+	clubMember, err := newClubMember(studentID)
 	if err != nil {
 		return err
 	}
